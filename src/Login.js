@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { login } from './api';
 
 function Login({ onLogin, setError }) {
   const [username, setUsername] = useState('');
@@ -11,20 +12,7 @@ function Login({ onLogin, setError }) {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('https://yuiv-backend.onrender.com/users/login', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-      });
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      
-      const data = await res.json();
+      const data = await login(username, password);
       if (data.success) {
         onLogin();
       } else {
