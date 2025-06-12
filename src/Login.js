@@ -13,7 +13,7 @@ function Login({ onLogin, setError }) {
     setLoading(true);
     setError('');
 
-    const loginUrl = `${process.env.REACT_APP_BACKEND_URL || 'https://raghavbackend.onrender.com'}/users/login`;
+    const loginUrl = `${process.env.REACT_APP_BACKEND_URL || 'https://yuvika-backend-production.up.railway.app'}/users/login`;
     console.log('Attempting to login to:', loginUrl);
 
     try {
