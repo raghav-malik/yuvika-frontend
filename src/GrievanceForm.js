@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './GrievanceForm.css';
+import config from './config';
 
 const moods = [
   { label: 'Angry 😡', value: 'angry' },
@@ -26,7 +27,7 @@ function GrievanceForm({ onSubmit, setError }) {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3000/grievance', {
+      const res = await fetch(`${config.API_URL}/grievance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description, mood, severity })

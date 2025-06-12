@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import config from './config';
 
 function Login({ onLogin, setError }) {
   const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ function Login({ onLogin, setError }) {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3000/users/login', {
+      const res = await fetch(`${config.API_URL}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
