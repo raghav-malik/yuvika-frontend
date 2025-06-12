@@ -1,0 +1,26 @@
+.confirmation-container {
+  background: #ffe0f0;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 350px;
+  margin: 3rem auto;
+  box-shadow: 0 2px 12px #f8b6d6;
+  text-align: center;
+}
+.confirmation-container h2 {
+  color: #ff69b4;
+}
+.confirmation-container button {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  padding: 0.7rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+.confirmation-container button:hover {
+  background: #ff1493;
+} 
