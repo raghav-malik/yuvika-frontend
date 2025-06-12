@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { loginUser } from './apiService';
+import { directLogin } from './directApi';
 import './Login.css';
 
 function Login({ onLogin, setError }) {
@@ -9,27 +9,26 @@ function Login({ onLogin, setError }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt started');
     setLoading(true);
     setError('');
-
+    
+    console.log('Login attempt started with username:', username);
+    
     try {
-      console.log('Making login request...');
-      const data = await loginUser(username, password);
-      console.log('Response data:', data);
-
-      if (data.success) {
-        console.log('Login successful');
+      // Use the direct API call with hardcoded URL
+      const result = await directLogin(username, password);
+      
+      if (result.success) {
+        console.log('Login successful!');
         onLogin();
       } else {
-        console.log('Login failed:', data.message);
-        setError(data.message || 'Login failed');
+        console.log('Login failed:', result.message);
+        setError(result.message || 'Invalid credentials');
       }
     } catch (err) {
-      console.error('Login error details:', err);
-      setError('Network error - ' + err.message);
+      console.error('Login error:', err);
+      setError('Error: ' + (err.message || 'Unknown error'));
     } finally {
-      console.log('Login attempt finished');
       setLoading(false);
     }
   };

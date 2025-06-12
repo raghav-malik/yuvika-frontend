@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { submitGrievanceData } from './apiService';
+import { directSubmitGrievance } from './directApi';
 import './GrievanceForm.css';
 
 const moods = [
@@ -27,18 +27,31 @@ function GrievanceForm({ onSubmit, setError }) {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    console.log('Submitting grievance:', { title, mood, severity });
+    
     try {
-      const data = await submitGrievanceData({ title, description, mood, severity });
-      if (data.success) {
+      // Use the direct API call with hardcoded URL
+      const result = await directSubmitGrievance({ 
+        title, 
+        description, 
+        mood, 
+        severity 
+      });
+      
+      if (result.success) {
+        console.log('Grievance submitted successfully!');
         onSubmit();
       } else {
-        setError(data.message || 'Submission failed');
+        console.log('Grievance submission failed:', result.message);
+        setError(result.message || 'Submission failed');
       }
     } catch (err) {
       console.error('Grievance submission error:', err);
-      setError('Network error: ' + err.message);
+      setError('Error: ' + (err.message || 'Unknown error'));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -68,7 +81,9 @@ function GrievanceForm({ onSubmit, setError }) {
             {severities.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
-        <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit'}
+        </button>
       </form>
     </div>
   );
