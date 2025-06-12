@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://yuiv-backend.onrender.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://yuvi-backend.onrender.com';
 
 export const login = async (username, password) => {
   const response = await fetch(`${BACKEND_URL}/users/login`, {

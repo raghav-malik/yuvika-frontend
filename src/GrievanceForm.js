@@ -27,7 +27,7 @@ function GrievanceForm({ onSubmit, setError }) {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('https://yuiv-backend.onrender.com/grievance', {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://yuvi-backend.onrender.com'}/grievance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description, mood, severity })

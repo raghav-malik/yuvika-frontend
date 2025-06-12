@@ -13,7 +13,7 @@ function Login({ onLogin, setError }) {
     setLoading(true);
     setError('');
 
-    const loginUrl = 'https://yuiv-backend.onrender.com/users/login';
+    const loginUrl = `${process.env.REACT_APP_BACKEND_URL || 'https://yuvi-backend.onrender.com'}/users/login`;
     console.log('Attempting to login to:', loginUrl);
 
     try {
