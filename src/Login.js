@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { loginUser } from './apiService';
 import './Login.css';
 
 function Login({ onLogin, setError }) {
@@ -9,28 +10,12 @@ function Login({ onLogin, setError }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Login attempt started');
-    console.log('Username:', username);
     setLoading(true);
     setError('');
 
-    const loginUrl = `${process.env.REACT_APP_BACKEND_URL || 'https://raghavbackend.onrender.com'}/users/login`;
-    console.log('Attempting to login to:', loginUrl);
-
     try {
-      console.log('Making fetch request...');
-      const res = await fetch(loginUrl, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-      });
-      
-      console.log('Response status:', res.status);
-      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
-      
-      const data = await res.json();
+      console.log('Making login request...');
+      const data = await loginUser(username, password);
       console.log('Response data:', data);
 
       if (data.success) {
@@ -41,11 +26,7 @@ function Login({ onLogin, setError }) {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      console.error('Login error details:', {
-        name: err.name,
-        message: err.message,
-        stack: err.stack
-      });
+      console.error('Login error details:', err);
       setError('Network error - ' + err.message);
     } finally {
       console.log('Login attempt finished');

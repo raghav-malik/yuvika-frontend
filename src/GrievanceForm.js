@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { submitGrievanceData } from './apiService';
 import './GrievanceForm.css';
 
 const moods = [
@@ -27,19 +28,15 @@ function GrievanceForm({ onSubmit, setError }) {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://raghavbackend.onrender.com'}/grievance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, mood, severity })
-      });
-      const data = await res.json();
+      const data = await submitGrievanceData({ title, description, mood, severity });
       if (data.success) {
         onSubmit();
       } else {
         setError(data.message || 'Submission failed');
       }
     } catch (err) {
-      setError('Network error');
+      console.error('Grievance submission error:', err);
+      setError('Network error: ' + err.message);
     }
     setLoading(false);
   };
