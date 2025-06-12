@@ -4,24 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// Debug API URL issues
-console.log('Application starting...');
-console.log('Current origin:', window.location.origin);
-console.log('Backend URL hardcoded to: https://raghavbackend.onrender.com');
-
-// Override fetch to log all API calls
-const originalFetch = window.fetch;
-window.fetch = function(url, options) {
-  console.log(`Fetch request to: ${url}`, options);
-  return originalFetch(url, options).then(response => {
-    console.log(`Fetch response from: ${url}`, response);
-    return response;
-  }).catch(error => {
-    console.error(`Fetch error for: ${url}`, error);
-    throw error;
-  });
-};
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

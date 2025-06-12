@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { directLogin } from './directApi';
 import './Login.css';
 
 function Login({ onLogin, setError }) {
@@ -9,26 +8,47 @@ function Login({ onLogin, setError }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Login attempt started');
+    console.log('Username:', username);
     setLoading(true);
     setError('');
-    
-    console.log('Login attempt started with username:', username);
-    
+
+    const loginUrl = `${process.env.REACT_APP_BACKEND_URL || 'https://raghavbackend.onrender.com'}/users/login`;
+    console.log('Attempting to login to:', loginUrl);
+
     try {
-      // Use the direct API call with hardcoded URL
-      const result = await directLogin(username, password);
+      console.log('Making fetch request...');
+      const res = await fetch(loginUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
       
-      if (result.success) {
-        console.log('Login successful!');
+      console.log('Response status:', res.status);
+      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
+      
+      const data = await res.json();
+      console.log('Response data:', data);
+
+      if (data.success) {
+        console.log('Login successful');
         onLogin();
       } else {
-        console.log('Login failed:', result.message);
-        setError(result.message || 'Invalid credentials');
+        console.log('Login failed:', data.message);
+        setError(data.message || 'Login failed');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Error: ' + (err.message || 'Unknown error'));
+      console.error('Login error details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+      setError('Network error - ' + err.message);
     } finally {
+      console.log('Login attempt finished');
       setLoading(false);
     }
   };

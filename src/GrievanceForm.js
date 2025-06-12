@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { directSubmitGrievance } from './directApi';
 import './GrievanceForm.css';
 
 const moods = [
@@ -27,31 +26,22 @@ function GrievanceForm({ onSubmit, setError }) {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
-    console.log('Submitting grievance:', { title, mood, severity });
-    
     try {
-      // Use the direct API call with hardcoded URL
-      const result = await directSubmitGrievance({ 
-        title, 
-        description, 
-        mood, 
-        severity 
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://raghavbackend.onrender.com'}/grievance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, mood, severity })
       });
-      
-      if (result.success) {
-        console.log('Grievance submitted successfully!');
+      const data = await res.json();
+      if (data.success) {
         onSubmit();
       } else {
-        console.log('Grievance submission failed:', result.message);
-        setError(result.message || 'Submission failed');
+        setError(data.message || 'Submission failed');
       }
     } catch (err) {
-      console.error('Grievance submission error:', err);
-      setError('Error: ' + (err.message || 'Unknown error'));
-    } finally {
-      setLoading(false);
+      setError('Network error');
     }
+    setLoading(false);
   };
 
   return (
@@ -81,9 +71,7 @@ function GrievanceForm({ onSubmit, setError }) {
             {severities.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit'}
-        </button>
+        <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
       </form>
     </div>
   );
