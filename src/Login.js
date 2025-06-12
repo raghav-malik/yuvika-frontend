@@ -8,24 +8,49 @@ function Login({ onLogin, setError }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Login attempt started');
+    console.log('Username:', username);
     setLoading(true);
     setError('');
+
+    const loginUrl = 'https://yuiv-backend.onrender.com/users/login';
+    console.log('Attempting to login to:', loginUrl);
+
     try {
-      const res = await fetch('https://yuiv-backend.onrender.com/users/login', {
+      console.log('Making fetch request...');
+      const res = await fetch(loginUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ username, password })
       });
+      
+      console.log('Response status:', res.status);
+      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
+      
       const data = await res.json();
+      console.log('Response data:', data);
+
       if (data.success) {
+        console.log('Login successful');
         onLogin();
       } else {
+        console.log('Login failed:', data.message);
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      setError('Network error');
+      console.error('Login error details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+      setError('Network error - ' + err.message);
+    } finally {
+      console.log('Login attempt finished');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -46,7 +71,9 @@ function Login({ onLogin, setError }) {
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   );
