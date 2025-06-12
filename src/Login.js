@@ -12,19 +12,31 @@ function Login({ onLogin, setError }) {
     setLoading(true);
     setError('');
     try {
+      console.log('Attempting to login to:', `${config.API_URL}/users/login`);
       const res = await fetch(`${config.API_URL}/users/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ username, password })
       });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
+      console.log('Login response:', data);
+      
       if (data.success) {
         onLogin();
       } else {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      setError('Network error');
+      console.error('Login error:', err);
+      setError(`Network error: ${err.message}`);
     }
     setLoading(false);
   };
